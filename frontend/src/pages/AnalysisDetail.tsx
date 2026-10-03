@@ -6,7 +6,8 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { mockPhotos, mockTasks } from '../mocks/data';
 
@@ -95,7 +96,7 @@ export default function AnalysisDetail() {
         
         <Grid item xs={12} md={5}>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <AssignmentLateIcon color="action" /> Связанные задания
+            <AssignmentIcon color="action" /> Связанные задания
           </Typography>
           
           <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 3, overflow: 'hidden' }}>
@@ -111,9 +112,9 @@ export default function AnalysisDetail() {
                   <React.Fragment key={task.id}>
                     <ListItem alignItems="flex-start" sx={{ p: 2, bgcolor: task.status === 'completed' ? 'action.hover' : 'transparent' }}>
                       <ListItemAvatar>
-                        <Avatar sx={{ bgcolor: task.status === 'completed' ? 'success.light' : 'warning.light' }}>
-                          {task.status === 'completed' ? <CheckCircleOutlineIcon /> : <AssignmentLateIcon />}
-                        </Avatar>
+                        <Avatar sx={{ bgcolor: task.status === 'completed' ? 'success.light' : task.status === 'in_progress' ? 'warning.light' : 'error.light'}}>
+                          {task.status === 'completed' ? <AssignmentTurnedInIcon /> : task.status === 'in_progress' ? <AssignmentIcon/> : <AssignmentLateIcon/>}
+                        </Avatar> 
                       </ListItemAvatar>
                       <ListItemText 
                         primary={<Typography variant="subtitle2" fontWeight="600">{task.description}</Typography>} 
@@ -138,7 +139,7 @@ export default function AnalysisDetail() {
               </List>
             ) : (
               <Box p={4} textAlign="center">
-                <CheckCircleOutlineIcon sx={{ fontSize: 48, color: 'success.main', opacity: 0.5, mb: 1 }} />
+                <AssignmentTurnedInIcon sx={{ fontSize: 48, color: 'success.main', opacity: 0.5, mb: 1 }} />
                 <Typography color="text.secondary">Проблем не обнаружено.</Typography>
                 <Typography variant="body2" color="text.secondary">Задания на ремонт не требуются.</Typography>
               </Box>

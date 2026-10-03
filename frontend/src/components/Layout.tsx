@@ -118,7 +118,7 @@ export default function Layout(props: Props) {
           );
         })}
       </List>
-      <Box sx={{ p: 2, m: 2, bgcolor: 'background.default', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+      {/* <Box sx={{ p: 2, m: 2, bgcolor: 'background.default', borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
         <Typography variant="subtitle2" fontWeight="bold">Нужна помощь?</Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1, mt: 0.5 }}>
           Ознакомьтесь с документацией оператора.
@@ -126,7 +126,8 @@ export default function Layout(props: Props) {
         <Typography variant="body2" color="primary" sx={{ cursor: 'pointer', fontWeight: 500 }}>
           Перейти к справке →
         </Typography>
-      </Box>
+      </Box> */}
+      {/* Добавить в будущем для навигации */}
     </Box>
   );
 

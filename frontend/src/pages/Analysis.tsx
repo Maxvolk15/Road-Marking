@@ -17,7 +17,7 @@ export default function Analysis() {
       case 'error':
         return <Chip label="Ошибка" color="error" size="small" sx={{ fontWeight: 600, boxShadow: 1 }} />;
       default:
-        return <Chip label="Неизвестно" size="small" />;
+        return <Chip label="Абсолют ошибка" size="small" />;
     }
   };
 

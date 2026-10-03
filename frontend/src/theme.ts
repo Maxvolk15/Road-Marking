@@ -3,15 +3,15 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2563eb', // Синий (Tailwind blue-600)
+      main: '#2563eb',
       light: '#60a5fa',
       dark: '#1e40af',
     },
     secondary: {
-      main: '#f59e0b', // Янтарный
+      main: '#f59e0b',
     },
     background: {
-      default: '#f8fafc', // Светло-серый фон
+      default: '#f8fafc',
       paper: '#ffffff',
     },
     text: {
@@ -34,7 +34,7 @@ const theme = createTheme({
     }
   },
   shape: {
-    borderRadius: 12, // Более округлые углы
+    borderRadius: 12,
   },
   components: {
     MuiButton: {
@@ -57,7 +57,6 @@ const theme = createTheme({
           boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
           transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
           '&:hover': {
-            // transform: 'translateY(-4px)', приподнятие карточки при наведении (добавить / убрать по вкусу)
             boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
           }
         }

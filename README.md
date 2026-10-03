@@ -78,4 +78,17 @@ npm run dev
 - Кнопка "Загрузить для анализа" на странице Upload лишь имитирует загрузку (показывает alert).
 
 ## Скриншоты
-Скриншоты реализованных экранов размещены в папке `docs/screenshots`.
+- Дашборд
+![Скриншот Дашборда](docs\screenshots\Dashboard.png)
+
+- Выгрузка файлов
+![Скриншот выгрузки файлов](docs\screenshots\Upload_1.png)
+
+- Анализ файлов
+![Скриншот анализа файлов](docs\screenshots\Analysis.png)
+
+- Детали анализа
+![Скриншот деталей анализа 1 фото](docs\screenshots\Analysis_detail_1.png)
+
+- Таски
+![Скриншот тасков по фото](docs\screenshots\Tasks.png)
