@@ -21,11 +21,21 @@
 5. **Задания на ремонт (Tasks)** - таблица со списком заданий и их статусами.
 
 ## Технологический стек
+
+### Frontend (ЛР №1)
 - **Frontend-фреймворк:** React
 - **Язык:** TypeScript
 - **Сборщик:** Vite
 - **UI-библиотека:** Material-UI (MUI) @mui/material
 - **Маршрутизация:** react-router-dom
+
+### Backend и База данных (ЛР №2)
+- **Backend-фреймворк:** FastAPI (Python 3.10+)
+- **ORM:** SQLAlchemy 2.0
+- **База данных:** PostgreSQL (драйвер `psycopg` / `psycopg2`)
+- **Валидация данных и схемы:** Pydantic v2 + Pydantic-Settings
+- **ASGI-сервер:** Uvicorn
+- **Тестирование:** Pytest + HTTPX TestClient
 
 ## Структура frontend-проекта
 ```text
@@ -92,3 +102,145 @@ npm run dev
 
 - Таски
 ![Скриншот тасков по фото](docs\screenshots\Tasks.png)
+
+---
+
+
+## Структура backend-проекта
+Код серверной части разделен по слоям ответственности:
+```text
+backend/
+├── app/
+│   ├── config.py                 # Конфигурация приложения (Pydantic-Settings, загрузка .env)
+│   ├── database.py               # Подключение к PostgreSQL, фабрика SessionLocal, Base, get_db
+│   ├── models/                   # Модели SQLAlchemy ORM
+│   │   ├── photo.py              # Сущность Photo (фотографии дорог и результаты анализа)
+│   │   └── task.py               # Сущность Task (задания на ремонт дорожной разметки)
+│   ├── schemas/                  # Схемы валидации Pydantic (запросы и ответы)
+│   │   ├── photo.py              # PhotoCreate, PhotoUpdate, PhotoResponse, PhotoDetailResponse
+│   │   ├── task.py               # TaskCreate, TaskUpdate, TaskResponse, Enums (Priority, Status)
+│   │   └── stats.py              # DashboardStatsResponse
+│   ├── crud/                     # Слой доступа к данным и бизнес-логики (CRUD)
+│   │   ├── photo.py              # CRUD-операции с фото и агрегация статистики дашборда
+│   │   └── task.py               # CRUD-операции с ремонтными заданиями
+│   ├── routers/                  # Модульные маршруты FastAPI
+│   │   ├── photos.py             # Эндпоинты /api/v1/photos (включая вложенные задачи)
+│   │   ├── tasks.py              # Эндпоинты /api/v1/tasks
+│   │   └── stats.py              # Эндпоинт /api/v1/stats (статистика для главного экрана)
+│   ├── seed.py                   # Скрипт наполнения базы демонстрационными данными
+│   └── main.py                   # Точка входа FastAPI, CORS, обработка ошибок, lifespan
+├── tests/
+│   └── test_api.py               # Набор автоматизированных тестов API и БД (pytest)
+├── .env.example                  # Шаблон конфигурации окружения без секретов
+├── .env                          # Локальные переменные окружения (в .gitignore)
+├── requirements.txt              # Зависимости Python
+└── run.py                        # Скрипт запуска сервера Uvicorn
+```
+
+## Модель данных (Entity-Relationship)
+
+Система построена на двух основных связанных сущностях:
+
+1. **`Photo` (таблица `photos`)** — фотография участка дороги и статус её обработки ML-моделью:
+   - `id` (Integer, Primary Key, autoincrement) — уникальный идентификатор.
+   - `filename` (String(255)) — исходное имя файла.
+   - `image_url` (String(1000)) — URL или путь к файлу изображения.
+   - `address` (String(255)) — адрес участка дороги (индексирован).
+   - `status` (String(50)) — статус анализа (`processing`, `processed`, `error`).
+   - `issues_count` (Integer) — количество обнаруженных дефектов разметки.
+   - `error_message` (Text, nullable) — причина ошибки анализа (при `status = 'error'`).
+   - `created_at` / `updated_at` (DateTime with timezone) — метки времени создания и изменения.
+   - **Связь:** `tasks` (один-ко-многим к `Task`) с каскадным удалением `cascade="all, delete-orphan"`.
+
+2. **`Task` (таблица `tasks`)** — сформированное задание на проведение дорожно-ремонтных работ:
+   - `id` (Integer, Primary Key, autoincrement) — уникальный идентификатор.
+   - `photo_id` (Integer, Foreign Key `photos.id` ON DELETE CASCADE) — ссылка на исходную фотографию.
+   - `description` (Text) — описание дефекта и необходимых работ.
+   - `address` (String(255)) — адрес проведения ремонтных работ.
+   - `priority` (String(50)) — приоритет (`low`, `medium`, `high`).
+   - `status` (String(50)) — статус выполнения (`pending`, `in_progress`, `completed`).
+   - `created_at` / `updated_at` (DateTime with timezone) — метки времени создания и изменения.
+   - **Связь:** `photo` (обратная связь многие-к-одному к `Photo`).
+
+## Настройка окружения и переменных
+
+Параметры вынесены в файл конфигурации `.env`. Шаблон настроек без секретов представлен в `backend/.env.example`:
+
+```bash
+# Строка подключения к PostgreSQL
+# Формат: postgresql://<user>:<password>@<host>:<port>/<dbname>
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/road_marking_db
+
+# Настройки приложения
+PROJECT_NAME="Контроль дорожной разметки API"
+DEBUG=True
+API_V1_PREFIX=/api/v1
+```
+
+## Подготовка базы данных PostgreSQL
+
+1. Убедитесь, что служба PostgreSQL запущена на вашем компьютере.
+2. Создайте базу данных `road_marking_db` через утилиту `psql` или pgAdmin:
+   ```sql
+   CREATE DATABASE road_marking_db;
+   ```
+3. При необходимости отредактируйте логин и пароль в файле `backend/.env`.
+
+> Таблицы `photos` и `tasks` создаются автоматически средствами SQLAlchemy при первом старте сервиса.
+
+## Установка зависимостей и запуск backend
+
+1. Перейдите в каталог `backend`:
+   ```bash
+   cd backend
+   ```
+2. Установите зависимости:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. (Опционально) Заполните базу данных демонстрационными данными:
+   ```bash
+   python app/seed.py
+   ```
+4. Запустите сервер разработки:
+   ```bash
+   python run.py
+   # либо через uvicorn напрямую:
+   uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+   ```
+5. Сервер будет доступен по адресу `http://127.0.0.1:8000`.
+
+## Интерактивная документация API (Swagger / ReDoc)
+
+После запуска доступны интерактивные спецификации OpenAPI:
+- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+## Реализованные эндпоинты REST API
+
+| Метод | URL | Описание | Код ответа |
+|-------|-----|----------|------------|
+| `GET` | `/health` | Проверка работоспособности сервиса | `200 OK` |
+| `GET` | `/api/v1/photos/` | Список фото с фильтром по `status` и пагинацией (`skip`, `limit`) | `200 OK` |
+| `POST` | `/api/v1/photos/` | Регистрация новой фотографии улицы | `201 Created` |
+| `GET` | `/api/v1/photos/{id}` | Детали фото со списком связанных ремонтных заданий | `200 OK` / `404` |
+| `PUT` / `PATCH` | `/api/v1/photos/{id}` | Полное или частичное обновление записи фото | `200 OK` / `404` |
+| `DELETE` | `/api/v1/photos/{id}` | Удаление фото и каскадное удаление его заданий | `204 No Content` / `404` |
+| `GET` | `/api/v1/photos/{id}/tasks` | Получение списка заданий для конкретной фотографии | `200 OK` / `404` |
+| `POST` | `/api/v1/photos/{id}/tasks` | Создание задания напрямую для указанной фотографии | `201 Created` / `404` |
+| `GET` | `/api/v1/tasks/` | Список заданий с фильтрацией по `photo_id`, `status`, `priority` | `200 OK` |
+| `POST` | `/api/v1/tasks/` | Создание задания (с валидацией существования `photo_id`) | `201 Created` / `404` / `422` |
+| `GET` | `/api/v1/tasks/{id}` | Получение задания по ID | `200 OK` / `404` |
+| `PUT` / `PATCH` | `/api/v1/tasks/{id}` | Обновление статуса, приоритета или описания задания | `200 OK` / `404` |
+| `DELETE` | `/api/v1/tasks/{id}` | Удаление задания | `204 No Content` / `404` |
+| `GET` | `/api/v1/stats/` | Сводная аналитика дашборда (всего фото, обработано, задач) | `200 OK` |
+
+## Запуск автоматизированных тестов
+
+Для проверки работы API, валидации данных, корректности CRUD-операций и каскадного удаления связанных записей реализован тестовый набор на `pytest`:
+
+```bash
+pytest backend/tests/test_api.py -v
+```
+
+Тесты выполняются в изолированной тестовой БД в памяти (SQLite in-memory) с автоматическим пересозданием таблиц и не требуют запущенного PostgreSQL для прогона.

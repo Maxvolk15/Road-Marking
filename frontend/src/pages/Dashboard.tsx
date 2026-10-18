@@ -1,5 +1,4 @@
-import React from 'react';
-import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
+import { Grid, Paper, Typography, Box } from '@mui/material';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AssignmentIcon from '@mui/icons-material/Assignment';

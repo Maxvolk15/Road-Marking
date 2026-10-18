@@ -23,6 +23,9 @@ venv/
 .venv/
 env/
 .env
+backend/.env
+*.db
+.pytest_cache/
 
 # OS / Editors
 .DS_Store

@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Box, Typography, Card, CardMedia, CardContent, 
   CardActions, Button, Grid, Chip, Divider 

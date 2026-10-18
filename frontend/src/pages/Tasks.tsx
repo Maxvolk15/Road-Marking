@@ -33,7 +33,7 @@ export default function Tasks() {
     handleMenuClose();
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): 'error' | 'warning' | 'success' | 'default' => {
     switch (status) {
       case 'open': return 'error';
       case 'in_progress': return 'warning';
@@ -107,7 +107,7 @@ export default function Tasks() {
                 <TableCell>
                   <Chip 
                     label={getStatusLabel(task.status)} 
-                    color={getStatusColor(task.status) as any} 
+                    color={getStatusColor(task.status)} 
                     size="small"
                     sx={{ fontWeight: 500 }}
                   />
