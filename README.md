@@ -22,17 +22,17 @@
 
 ## Технологический стек
 
-### Frontend (ЛР №1)
+### Frontend
 - **Frontend-фреймворк:** React
 - **Язык:** TypeScript
 - **Сборщик:** Vite
 - **UI-библиотека:** Material-UI (MUI) @mui/material
 - **Маршрутизация:** react-router-dom
 
-### Backend и База данных (ЛР №2)
+### Backend и База данных
 - **Backend-фреймворк:** FastAPI (Python 3.10+)
 - **ORM:** SQLAlchemy 2.0
-- **База данных:** PostgreSQL (драйвер `psycopg` / `psycopg2`)
+- **База данных:** PostgreSQL
 - **Валидация данных и схемы:** Pydantic v2 + Pydantic-Settings
 - **ASGI-сервер:** Uvicorn
 - **Тестирование:** Pytest + HTTPX TestClient
@@ -143,13 +143,11 @@ backend/
 
 1. **`Photo` (таблица `photos`)** — фотография участка дороги и статус её обработки ML-моделью:
    - `id` (Integer, Primary Key, autoincrement) — уникальный идентификатор.
-   - `filename` (String(255)) — исходное имя файла.
    - `image_url` (String(1000)) — URL или путь к файлу изображения.
    - `address` (String(255)) — адрес участка дороги (индексирован).
    - `status` (String(50)) — статус анализа (`processing`, `processed`, `error`).
    - `issues_count` (Integer) — количество обнаруженных дефектов разметки.
-   - `error_message` (Text, nullable) — причина ошибки анализа (при `status = 'error'`).
-   - `created_at` / `updated_at` (DateTime with timezone) — метки времени создания и изменения.
+   - `created_at` / `updated_at` — метки времени создания и изменения.
    - **Связь:** `tasks` (один-ко-многим к `Task`) с каскадным удалением `cascade="all, delete-orphan"`.
 
 2. **`Task` (таблица `tasks`)** — сформированное задание на проведение дорожно-ремонтных работ:
@@ -157,8 +155,7 @@ backend/
    - `photo_id` (Integer, Foreign Key `photos.id` ON DELETE CASCADE) — ссылка на исходную фотографию.
    - `description` (Text) — описание дефекта и необходимых работ.
    - `address` (String(255)) — адрес проведения ремонтных работ.
-   - `priority` (String(50)) — приоритет (`low`, `medium`, `high`).
-   - `status` (String(50)) — статус выполнения (`pending`, `in_progress`, `completed`).
+   - `status` (String(50)) — статус выполнения (`open`, `in_progress`, `completed`).
    - `created_at` / `updated_at` (DateTime with timezone) — метки времени создания и изменения.
    - **Связь:** `photo` (обратная связь многие-к-одному к `Photo`).
 
