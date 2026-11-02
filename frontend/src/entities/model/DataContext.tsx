@@ -71,7 +71,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return JSON.parse(saved);
       }
     } catch {
-      // Игнорируем ошибки парсинга LocalStorage
+      // Игнор ошибок
     }
     return mockPhotos;
   });
@@ -83,7 +83,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return JSON.parse(saved);
       }
     } catch {
-      // Игнорируем ошибки парсинга LocalStorage
+      // Игнор ошибок
     }
     return mockTasks;
   });
@@ -102,7 +102,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(photos));
     } catch {
-      // Квота или инкогнито
+      // Игнор
     }
   }, [photos]);
 
@@ -110,7 +110,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(tasks));
     } catch {
-      // Квота или инкогнито
+      // Игнор
     }
   }, [tasks]);
 
@@ -270,7 +270,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem(STORAGE_KEY_PHOTOS);
       localStorage.removeItem(STORAGE_KEY_TASKS);
     } catch {
-      // Игнорируем
+      // Игнор
     }
     showNotification('Данные успешно сброшены к начальному состоянию', 'info');
   }, [showNotification]);
@@ -315,7 +315,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useData = (): DataContextType => {
   const context = useContext(DataContext);
   if (!context) {

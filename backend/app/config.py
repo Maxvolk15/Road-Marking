@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     """
     PROJECT_NAME: str = "Контроль дорожной разметки API"
     VERSION: str = "1.0.0"
-    API_V1_PREFIX: str = "/api/v1"
+    API_V1_PREFIX: str = "/api/m15"
     DEBUG: bool = True
 
     # Параметры подключения к PostgreSQL

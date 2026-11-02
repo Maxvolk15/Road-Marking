@@ -78,13 +78,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.get("/health", tags=["Служебные"])
 def healthcheck():
     return {
-        "status": "healthy",
+        "status": "It's alive!!!!!!!!!!",
         "service": settings.PROJECT_NAME,
         "version": settings.VERSION,
     }
 
 
-# Подключение модульных маршрутов API с единым префиксом /api/v1
+# Подключение модульных маршрутов API с единым префиксом /api/m15
 app.include_router(photos_router, prefix=settings.API_V1_PREFIX)
 app.include_router(tasks_router, prefix=settings.API_V1_PREFIX)
 app.include_router(stats_router, prefix=settings.API_V1_PREFIX)
